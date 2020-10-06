@@ -1,5 +1,5 @@
 import json
-import requests
+import aiohttp
 import discord
 from discord.ext import commands
 
@@ -17,12 +17,16 @@ async def on_message(message):
             command = command[1:]
             joo = "_"
             osuname = joo.join(command)
-            pp = requests.get(f"https://osu.ppy.sh/api/get_user_best?u={osuname}&k=token")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"https://osu.ppy.sh/api/get_user_best?u={osuname}&k=token") as r:
+                    pp = await r.json()
             isopp = pp.content.decode("utf-8")
             tosiisopp = json.loads(isopp)
             isoinpp = tosiisopp[0]['pp']
             intpp = int(round(float(isoinpp)))
-            response = requests.get(f"https://osu.ppy.sh/api/get_user?u={osuname}&k=token")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"https://osu.ppy.sh/api/get_user?u={osuname}&k=token") as r:
+                    response = await r.json()
             data = response.json()
             for u in data:
                 userid = u['user_id']
@@ -63,12 +67,16 @@ async def on_message(message):
                     ousnimi = (f"{osunimi}")
                     oosnimi = ousnimi.split("'")
                     osuname = oosnimi[3]
-                    pp = requests.get(f"https://osu.ppy.sh/api/get_user_best?u={osuname}&k=token")
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(f"https://osu.ppy.sh/api/get_user_best?u={osuname}&k=token") as r:
+                            pp = await r.json()
                     isopp = pp.content.decode("utf-8")
                     tosiisopp = json.loads(isopp)
                     isoinpp = tosiisopp[0]['pp']
                     intpp = int(round(float(isoinpp)))
-                    response = requests.get(f"https://osu.ppy.sh/api/get_user?u={osuname}&k=token")
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(f"https://osu.ppy.sh/api/get_user?u={osuname}&k=token") as r:
+                            response = await r.json()
                     data = response.json()
                     if len(data) == 0:
                         embedi = discord.Embed(colour=discord.Colour(0xFFC0CB))
@@ -105,12 +113,16 @@ async def on_message(message):
     elif message.content.startswith("https://osu.ppy.sh/users"):
         osuva = message.content.split("/")
         osuname = osuva[4]
-        pp = requests.get(f"https://osu.ppy.sh/api/get_user_best?u={osuname}&k=token")
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://osu.ppy.sh/api/get_user_best?u={osuname}&k=token") as r:
+                pp = await r.json()
         isopp = pp.content.decode("utf-8")
         tosiisopp = json.loads(isopp)
         isoinpp = tosiisopp[0]['pp']
         intpp = int(round(float(isoinpp)))
-        response = requests.get(f"https://osu.ppy.sh/api/get_user?u={osuname}&k=token")
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://osu.ppy.sh/api/get_user?u={osuname}&k=token") as r:
+                response = await r.json()
         data = response.json()
         for u in data:
             userid = u['user_id']
